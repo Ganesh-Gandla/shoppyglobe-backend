@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js"; 
 
 
 
-dotenv.config();  // load .env
+dotenv.config();  // load .env 
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.listen(process.env.PORT, () => {
 
 app.use("/api", productRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", cartRoutes);
 
 

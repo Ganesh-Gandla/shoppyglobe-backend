@@ -7,7 +7,14 @@ export const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Check if already exists
+        // Validation: fields missing
+        if (!name || !email || !password) {
+            return res.status(400).json({ 
+                message: "Name, email, and password are required" 
+            });
+        }
+
+        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered" });
@@ -16,7 +23,7 @@ export const registerUser = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user
+        // Create user
         const user = new User({
             name,
             email,
@@ -36,10 +43,18 @@ export const registerUser = async (req, res) => {
     }
 };
 
+
 // ------------------- LOGIN ------------------------
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // Validation: fields missing
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "Email and password are required"
+            });
+        }
 
         // Check user exist
         const user = await User.findOne({ email });
@@ -53,7 +68,7 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        // Generate JWT
+        // Generate token
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET,
